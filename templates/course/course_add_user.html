@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add user</title>
+</head>
+<body>
+    <form method="post" action="{% url 'course_add_user' course=course%}">
+        {% csrf_token %}
+        <p>This is {{ course }}</p>
+        <p>Teachers: <input type="text" name="teacher" value=""></p>
+        <p>Students: <input type="text" name="student" value=""></p>
+        <input type="submit" value="Add">
+    </form>
+</body>
+</html>

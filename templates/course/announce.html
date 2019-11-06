@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ course }}</title>
+</head>
+<body>
+    <h1>{{ announce.title }}</h1>
+    <p>{{ announce.desc }}</p>
+    {% if is_teacher %}
+        <p>You are a teacher</p>
+        <a href="{% url 'get_page' course=course announce=announce.title %}">Get submission</a>
+    {% else %}
+        <p>You are a student</p>
+        <a href="{% url 'submit_page' course=course announce=announce.title %}">Submit</a>
+    {% endif %}
+</body>
+</html>
