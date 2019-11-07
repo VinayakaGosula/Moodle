@@ -6,8 +6,10 @@
 </head>
 <body>
     <h1>Welcome to {{ course }}</h1>
-    <p><a href="{% url 'course_add_user' course=course%}">Add user</a></p>
-    <p><a href="{% url 'course_add_announce' course=course%}">Add announcement</a></p>
+    {% if is_teacher %}
+        <p><a href="{% url 'course_add_user' course=course%}">Add user</a></p>
+        <p><a href="{% url 'course_add_announce' course=course%}">Add announcement</a></p>
+    {% endif %}
     {% for x in announcel %}
         <p><a href="{{ course }}/{{ x.title }}">{{ x.title }}</a></p>
     {% endfor %}

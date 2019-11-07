@@ -3,5 +3,3 @@ from .accounts.views import *
 from .courses.views import *
 from .files.views import *
 
-
-
