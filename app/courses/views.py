@@ -26,8 +26,12 @@ def course_page(request, course):
     if not course_verify(course, user):
         return render(request, 'course/error.html')
     courseo = Course.objects.all().filter(title=course)[0]
+    uobj = User.objects.all().filter(name=user)[0]
+    is_teacher = 0
+    if uobj in courseo.teachers.all():
+        is_teacher = 1
     announce = courseo.announcements_set.all()
-    return render(request, 'course/course.html', {'course': course, 'announcel': announce})
+    return render(request, 'course/course.html', {'course': course, 'announcel': announce, 'is_teacher' : is_teacher})
 
 
 def course_add_user(request, course):

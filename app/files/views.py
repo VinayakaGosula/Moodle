@@ -40,7 +40,7 @@ def getzip(course, assign):
     s = io.BytesIO()
     zipf = zipfile.ZipFile(s, "w")
     for file in files:
-        zipf.write(settings.MEDIA_ROOT+dir_fil+file, file)
+        zipf.write(settings.MEDIA_ROOT+'/'+dir_fil+file, file)
     zipf.close()
     return s
 

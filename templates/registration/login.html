@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Moodle++ - Login Page</title>
 </head>
 <body>
     {% if from.errors %}
@@ -12,13 +12,29 @@
     {% if next %}
         <p>You cannot access</p>
     {% endif %}
+    <h1 style="text-align: center; font-size:60px; padding: 60px;">Moodle++</h1>
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        <p>Username: {{ form.username }}</p>
-        <p>Password: {{ form.password }}</p>
-        <p><input type="submit" value="login"></p>
-        <button onclick="location.href='/account/register'" type="button">register</button>
+        <center>
+        <p style = "font-size: 25px" >Username: {{ form.username }}</p>
+        <p style = "font-size: 25px">Password: {{ form.password }}</p>
+        <p ><input style="border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;"  type="submit" value="Login"></p>
+        <button style="border: none;
+        color: black;
+        padding: 15px 32px;
+        margin: 50px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;"onclick="location.href='/account/register'" type="button">Register (for new users) </button>
         <input type="hidden" name="next" value="{{ next }}">
+        </center>
     </form>
 </body>
 </html>

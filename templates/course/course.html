@@ -2,16 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Announcements</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Announcements - {{course}} - Moodle++</title>
 </head>
+<style>
+ 
+button {
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    margin: 50px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-size: 16px;
+}
+
+</style>
 <body>
-    <h1>Welcome to {{ course }}</h1>
+    <button style="position: absolute;
+        top: 8px;
+        right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
+    <h1 style="text-align: center; font-size:60px; padding-top: 60px; padding-bottom: 10px;">{{ course }}</h1>
     {% if is_teacher %}
-        <p><a href="{% url 'course_add_user' course=course%}">Add user</a></p>
-        <p><a href="{% url 'course_add_announce' course=course%}">Add announcement</a></p>
+    <center>
+    <button onclick='location.href="{% url 'course_add_user' course=course%}"' type="button">Add user</button>
+    <button onclick='location.href="{% url 'course_add_announce' course=course%}"'>Add announcement</button>
+    </center>
     {% endif %}
-    {% for x in announcel %}
-        <p><a href="{{ course }}/{{ x.title }}">{{ x.title }}</a></p>
-    {% endfor %}
+    <h2 style="font-size: 40px; margin-left: 5px;">Announcements</h2>
+    <ul style="margin-left: -5px;">
+        {% for x in announcel %}
+        <li><button style="margin-top:0cm;" onclick='location.href="{{ course }}/{{ x.title }}"' type="button">{{ x.title }}</button></ul></li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

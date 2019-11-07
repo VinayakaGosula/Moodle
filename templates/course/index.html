@@ -2,18 +2,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Index</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{user.username}}'s homepage - Moodle++</title>
 </head>
+<style>
+    * {
+  box-sizing: border-box;
+}
+
+.column {
+  float: left;
+  width: 50%;
+  padding: 10px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+ 
+button {
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    margin: 50px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 18px;
+    font-size: 16px;
+}
+
+</style>
 <body>
-    <h1>This is index page</h1>
-    <h3>Teacher</h3>
-    {% for x in tcourses %}
-        <p> <a href="/courses/{{ x.title }}">{{ x.title }}</a> </p>
-    {% endfor %}
-    <h3>Student</h3>
-    {% for x in scourses %}
-        <p> <a href="/courses/{{ x.title }}">{{ x.title }}</a> </p>
-    {% endfor %}
-    <a href="{% url 'logout' %}?next=/">Logout</a>
+    <h1 style="text-align: center; font-size:60px; padding: 60px;">Welcome, {{ user.username }}</h1>
+    <div class="row">
+        <div class="column">
+            <h2 style="text-align: center; font-size:40px; padding:0cm"> Teaching Courses </h2>
+            <center>
+            <ul style="display: block; list-style-type: none;">
+                {% for x in tcourses %}
+                <li> <button style="margin-left: 0cm; "onclick='location.href="/courses/{{ x.title }}"' type="button">{{ x.title }}</button></li>
+                {% endfor %}
+            </ul>
+            </center>
+        </div>
+        <div class="column">
+            <h2 style="text-align: center; font-size:40px; padding:0cm"> Taken Courses </h2>
+            <center>
+            <ul style="display: block; list-style-type: none;">
+                {% for x in scourses %}
+                <li> <button style="margin-left: 0cm; "onclick='location.href="/courses/{{ x.title }}"' type="button">{{ x.title }}</button></li>
+                {% endfor %}
+            </ul>
+            </center>
+        </div>
+      </div>
+    <button style="position: absolute;
+    top: 8px;
+    right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
 </body>
 </html>
