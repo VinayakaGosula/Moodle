@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from ..models import *
-
+import csv
 
 def index(request):
     if request.user.is_authenticated:
@@ -55,6 +55,40 @@ def course_add_user(request, course):
                     stud = stud[0]
                     acourse.students.add(stud)
             acourse.save()
+            return redirect('/')
+        else:
+            return redirect('/')
+    else:
+        return render(request, 'course/error.html')
+
+def course_add_user_file(request, course):
+    print('DONE')
+    user = get_username(request)
+    if user == 'admin' or len(Course.objects.filter(title=course)[0].teachers.filter(name=user)) > 0:
+        if request.method == 'GET':
+            return render(request, 'course/course_add_user_file.html', {'course': course})
+        elif request.method == 'POST':
+            print('KVR')
+            upload_file = request.FILES['document'].read()
+            print(upload_file)
+            upload_file = upload_file.decode("utf-8")
+            reader = csv.reader(upload_file.split('\n'), delimiter=',')
+            acourse = Course.objects.all().filter(title=course)[0]
+            reader = reader[1:]
+            for row in reader:
+                print(row)
+                if(row[0]=='Instructor'):
+                    teach = User.objects.all().filter(name=row[1])
+                    if len(teach) > 0:
+                        teach = teach[0]
+                        acourse.teachers.add(teach)
+                if(row[0]=='Student'):
+                    stud = User.objects.all().filter(name=row[1])
+                    if len(stud) > 0:
+                        stud = stud[0]
+                        acourse.students.add(stud)
+                acourse.save()
+                print('done')
             return redirect('/')
         else:
             return redirect('/')

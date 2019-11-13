@@ -4,13 +4,63 @@
     <meta charset="UTF-8">
     <title>Add user</title>
 </head>
+<style>
+     * {
+      box-sizing: border-box;
+        }
+
+    .column {
+        float: left;
+        width: 50%;
+        padding: 10px; 
+        }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+        }
+    
+    button {
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            margin: 5px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+        font-size: 16px;
+        }
+</style>
 <body>
+    <button style="position: absolute;
+        top: 8px;
+        right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
+    <h1 style="font-size:60px; margin-left: 20px; margin-top:  100px">Add New users </h1>
+    <h2 style="font-size:45px; position: absolute; top: 100px; right: 100px;">Course : {{course}}</h2>
     <form method="post" action="{% url 'course_add_user' course=course%}">
         {% csrf_token %}
-        <p>This is {{ course }}</p>
-        <p>Teachers: <input type="text" name="teacher" value=""></p>
-        <p>Students: <input type="text" name="student" value=""></p>
-        <input type="submit" value="Add">
+        <div class="row">
+            <div class="column">
+                <h2 style=" font-size:40px; padding:0cm"> Add a new instructor here</h2>
+                <p style = "font-size: 25px" >Instructor's Username: <input type="text" name="teacher" value=""></p> 
+                <button type="submit">Add</button>    
+            </div>
+            <div class="column">
+                <h2 style=" font-size:40px; padding:0cm">Add a new student here</h2>
+                <p style = "font-size: 25px" >Student's Username: <input type="text" name="student" value=""></p>
+                <button type="submit">Add</button>
+            </div>
+        </div>
+    </form>
+    <form method="post" action="{% url 'course_add_user_file' course=course %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h2 style="text-align: center; font-size:40px; padding:0cm"> Add through the formatted file</h2>
+        <center>
+        <input type="file" name="document"  >
+        <button type="submit">Submit</button>
+        </center>
     </form>
 </body>
 </html>
