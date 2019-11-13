@@ -28,10 +28,10 @@ button {
     {% if is_teacher %}
     <center>
     <button onclick='location.href="{% url 'course_add_user' course=course%}"' type="button">Add user</button>
-    <button onclick='location.href="{% url 'course_add_announce' course=course%}"'>Add announcement</button>
+    <button onclick='location.href="{% url 'course_add_announce' course=course%}"'>Add assignment</button>
     </center>
     {% endif %}
-    <h2 style="font-size: 40px; margin-left: 5px;">Announcements</h2>
+    <h2 style="font-size: 40px; margin-left: 5px;">Assignments</h2>
     <ul style="margin-left: -5px;">
         {% for x in announcel %}
         <li><button style="margin-top:0cm;" onclick='location.href="{{ course }}/{{ x.title }}"' type="button">{{ x.title }}</button></ul></li>

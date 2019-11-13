@@ -21,5 +21,6 @@ urlpatterns = [
 
     #files
     path('courses/<str:course>/<str:announce>/submit', views.submit_assign, name='submit_page'),
-    path('courses/<str:course>/<str:announce>/get', views.get_assign, name='get_page')
+    path('courses/<str:course>/<str:announce>/get', views.get_assign, name='get_page'),
+    path('courses/<str:course>/<str:announce>/submit_mass', views.submit_assign_mass, name='submit_mass_page')
 ]
