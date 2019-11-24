@@ -20,6 +20,9 @@
 <body>
     <button style="position: absolute;
         top: 8px;
+        right: 150px;" onclick="location.href='/courses/{{course}}'" type="button">Back </button>
+    <button style="position: absolute;
+        top: 8px;
         right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
     <h1 style="font-size:60px; margin-left: 20px; margin-top: 100px;">{{ announce.title }}</h1>
     <h2 style="font-size:45px; position: absolute; top: 100px; right: 200px;">Course : {{course}}</h2>
@@ -27,19 +30,20 @@
     {% if is_teacher %}
         <center><button onclick='location.href="{% url 'get_page' course=course announce=announce.title %}"' type="button">Get submissions</button></center>
         <center><button style="margin: -20px;" onclick='location.href="{% url 'submit_mass_page' course=course announce=announce.title %}"' type="button">Upload Submissions</button></center>
-        <p><a href="{% url 'auto_grade_page' course=course announce=announce.title%}"> Auto grading files</a></p>
-        <p><a href="{% url 'man_grade_page' course=course announce=announce.title%}"> Manual grading files</a></p>
-        <p><a href="{% url 'course_modify_announce' course=course announce=announce.title%}"> Modify assignment</a></p>
+        <center><button  onclick='location.href="{% url 'auto_grade_page' course=course announce=announce.title%}"'> Auto grading files</button></center>
+        <center><button style="margin: -20px;" onclick='location.href="{% url 'man_grade_page' course=course announce=announce.title%}"'> Manual grading files</button></center>
+        <center><button onclick='location.href="{% url 'course_modify_announce' course=course announce=announce.title%}"'> Modify assignment</button></center>
     {% else %}
+        <br> <br>
         {% if not is_done %}
-            <center><button onclick='location.href="{% url 'submit_page' course=course announce=announce.title %}"' type="button">Add Submission</button></center>
+            <center><button style="margin-bottom: 10px" onclick='location.href="{% url 'submit_page' course=course announce=announce.title %}"' type="button">Add Submission</button></center>
         {% endif %}
         {% if sub_exists %}
-            <p><a href="/media/{{ course }}/{{ announce.title }}/{{ user }}/{{ sub_name }}">{{ sub_name }}</a></p>
+            <center><h2 style="font-size: 25px;">Your latest submission : <a href="/media/{{ course }}/{{ announce.title }}/{{ user }}/{{ sub_name }}">{{ sub_name }}</a></center>
         {% else %}
-            <p>You didn't submit anything</p>
+            <center><h2 style="font-size: 25px;">No submission added</h2></center>
         {% endif %}
     {% endif %}
-    <p>Deadline: {{ dead_date }}</p>
+    <center><h2 style="font-size: 30px; margin-top: 100px;">Deadline: {{ dead_date }}</h2></center>
 </body>
 </html>

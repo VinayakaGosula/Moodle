@@ -3,28 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Manual Grade</title>
+    <style>
+            button {
+                border: none;
+                color: black;
+                padding: 15px 32px;
+                margin: 50px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+            }
+    </style>
 </head>
 <body>
+    <button style="position: absolute;
+        top: 8px;
+        right: 150px;" onclick="location.href='/courses/{{course}}/{{announce}}/man_grade/{{file}}/list'" type="button">Back </button>
+    <button style="position: absolute;
+        top: 8px;
+        right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
+    <h1 style="font-size:60px; margin-left: 20px; margin-top: 100px;">Manual grading of {{ file }}</h1>
+    <h2 style="font-size:45px; position: absolute; top: 100px; right: 100px;">Course : {{course}}</h2>
+    <h2 style="font-size:45px; position: absolute; top: 100px; right: 400px;">Assignment : {{announce}}</h2>
+
     {% if done %}
-        No more submissions
+        <h2 style="font-size:45px; margin-left: 20px;">All Submissions are graded</h2>
     {% else %}
-        <h2>This is {{ user }}</h2>
         {% for fileloc in loc %}
-            {{ file }}
             {% if fileloc in exists %}
-                <embed src="{{ fileloc }}" width="100%" height="500">
+                <h1 style="font-size:45px; margin-left: 20px;">Author of the file - {{ user }}</h1>
+                <center><embed style="border-style: solid; border-width: 3px; margin: -10px; border-block-color: black; border-color: black;"  src="{{ fileloc }}" width="65%" height="650"></center>
             {% else %}
-                <p>The file doesn't exist or some error occured</p>
+                <center><h2 style="font-size: 30px;">Missing Submission of student - {{ user }}</h2></center>
             {% endif %}
         {% endfor %}
+        <center>
         <form method="post" action="{% url 'user_sub_view' course=course announce=announce file=file name=user%}">
             {% csrf_token %}
-            <p>Marks: <input type="text" name="marks" value="0"></p>
-            <p>Total marks: <input type="text" name="tot_marks" value="{{ tot_marks }}"></p>
-            <p>Comments: <input type="text" name="comment"></p>
-            <p hidden>Counter(for debugging): <input type="text" name="username" value="{{ user }}"></p>
-            <p><input type="submit" value="next ungraded"></p>
+            <h2 style="font-size:25px;">Marks: <input style="margin-right: 30px;"  type="text" name="marks" value="0">
+            Total marks: <input style="margin-right: 30px;"  type="text" name="tot_marks" value="{{ tot_marks }}"></h2>
+            <h2 style="font-size:25px; margin-bottom: 0px;" > Comment</h2> <div><textarea name="comment" style="height:50px; display: inline-block;"></textarea></div>
+            <button style="margin-top: 10px;" type="submit" value="next ungraded">Move to next ungraded submission</button>
+            <p hidden>Counter(for debugging): <input type="text" name="username" value="{{ user }}">
         </form>
+        </center>
     {% endif %}
 </body>
 </html>

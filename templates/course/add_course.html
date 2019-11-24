@@ -3,13 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>Add course</title>
+    <style>
+            button {
+                border: none;
+                color: black;
+                padding: 15px 32px;
+                margin: 50px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 18px;
+                font-size: 16px;
+            }
+     </style>
 </head>
 <body>
+    <button style="position: absolute;
+        top: 8px;
+        right: 150px;" onclick="location.href='/'" type="button">Back </button>
+    <button style="position: absolute;
+        top: 8px;
+        right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
+    <h1 style="text-align: center; font-size:45px; padding: 60px;">Create a new course</h1>
+    <center>
     <form method="post" action="{% url 'add_course' %}">
         {% csrf_token %}
-        <p>Title: <input type="text" name="title" value=""></p>
-        <p>Teacher: <input type="text" name="teacher" value=""></p>
-        <input type="submit" value="Add">
+        <h2 style="font-size: 30px;">Title: <input type="text" name="title" value=""></h2>
+        <h2 style="font-size: 30px;">Instructor: <input type="text" name="teacher" value=""></h2>
+        <button type="submit" value="Add">Create</button>
     </form>
+    </center>
 </body>
 </html>

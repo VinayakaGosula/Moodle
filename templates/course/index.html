@@ -38,7 +38,7 @@ button {
 <body>
     <h1 style="text-align: center; font-size:60px; padding: 60px;">Welcome, {{ user.username }}</h1>
     {% if is_admin %}
-        <a href="/admin/add_course">Create new course</a>
+        <center><button onclick= 'location.href="/admin/add_course"'>Create new course</button></center>
     {% endif %}
     <div class="row">
         <div class="column">

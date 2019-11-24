@@ -23,6 +23,9 @@ button {
 <body>
     <button style="position: absolute;
         top: 8px;
+        right: 150px;" onclick="location.href='/'" type="button">Back </button>
+    <button style="position: absolute;
+        top: 8px;
         right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
     <h1 style="text-align: center; font-size:60px; padding-top: 60px; padding-bottom: 10px;">{{ course }}</h1>
     {% if is_teacher %}

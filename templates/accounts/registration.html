@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
+    <style>
+            button {
+                border: none;
+                color: black;
+                padding: 15px 32px;
+                margin: 50px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 18px;
+                font-size: 16px;
+            }
+    </style>
 </head>
 <body>
-    <h1>Registration Page!!!</h1>
+    <button style="position: absolute;
+        top: 8px;
+        right: 150px;" onclick="location.href='/'" type="button">Back </button>
+    <h1 style="margin-top: 130px;">Registration Page!!!</h1>
     <form method="post" action="{% url 'register' %}">
         {% csrf_token %}
         {% if form.errors %}
