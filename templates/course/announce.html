@@ -27,8 +27,19 @@
     {% if is_teacher %}
         <center><button onclick='location.href="{% url 'get_page' course=course announce=announce.title %}"' type="button">Get submissions</button></center>
         <center><button style="margin: -20px;" onclick='location.href="{% url 'submit_mass_page' course=course announce=announce.title %}"' type="button">Upload Submissions</button></center>
+        <p><a href="{% url 'auto_grade_page' course=course announce=announce.title%}"> Auto grading files</a></p>
+        <p><a href="{% url 'man_grade_page' course=course announce=announce.title%}"> Manual grading files</a></p>
+        <p><a href="{% url 'course_modify_announce' course=course announce=announce.title%}"> Modify assignment</a></p>
     {% else %}
-        <center><button onclick='location.href="{% url 'submit_page' course=course announce=announce.title %}"' type="button">Add Submission</button></center>
+        {% if not is_done %}
+            <center><button onclick='location.href="{% url 'submit_page' course=course announce=announce.title %}"' type="button">Add Submission</button></center>
+        {% endif %}
+        {% if sub_exists %}
+            <p><a href="/media/{{ course }}/{{ announce.title }}/{{ user }}/{{ sub_name }}">{{ sub_name }}</a></p>
+        {% else %}
+            <p>You didn't submit anything</p>
+        {% endif %}
     {% endif %}
+    <p>Deadline: {{ dead_date }}</p>
 </body>
 </html>

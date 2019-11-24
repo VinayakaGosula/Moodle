@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modify</title>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add announcement</title>
+    <style>
+        * {
+          box-sizing: border-box;
+        }
+
+        input[type=text], select, textarea {
+          width: 100%;
+          padding: 12px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          resize: vertical;
+        }
+
+        label {
+          padding: 12px 12px 12px 0;
+          display: inline-block;
+          font-size: 25px;
+        }
+
+        input[type=submit] {
+          background-color: #aaa;
+          color: white;
+          padding: 12px 20px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          float: center;
+          font-size: 25px;
+        }
+
+        .container {
+          border-radius: 5px;
+          background-color: #f2f2f2;
+          padding: 20px;
+        }
+
+        .col-25 {
+          float: left;
+          width: 25%;
+          margin-top: 6px;
+        }
+
+        .col-75 {
+          float: left;
+          width: 75%;
+          margin-top: 6px;
+        }
+
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        button {
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            margin: 50px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px;
+        font-size: 16px;
+        }
+        </style>
+</head>
+<body>
+    <button style="position: absolute;
+        top: 8px;
+        right: 16px;" onclick="location.href='{% url 'logout' %}?next=/'" type="button">Logout </button>
+    <h1 style="font-size:60px; margin-left: 20px; margin-top:  100px">{{ announce.title }} assignment</h1>
+    <h2 style="font-size:45px; position: absolute; top: 100px; right: 200px;">Course : {{course}}</h2>
+    <div class="container">
+        <form action="{% url 'course_modify_announce' course=course announce=announce.title%}" method="post">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-25">
+            <label>Title</label>
+          </div>
+          <div class="col-75">
+            <input type="text" id="fname" name="title" value="{{ announce.title }}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-25">
+            <label for="subject">Description</label>
+          </div>
+          <div class="col-75">
+            <textarea id="subject" name="desc" style="height:200px">{{ announce.desc }}</textarea>
+          </div>
+        </div>
+            <p>Deadline: <input type="datetime-local" name='deadline' value="{{ end_date }}"></p>
+
+        <div class="row">
+          <input type="submit" value="Submit">
+        </div>
+        </form>
+      </div>
+</body>
+</html>
+</body>
+</html>

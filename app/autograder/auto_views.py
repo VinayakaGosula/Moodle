@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
 from .misc import *
+import threading
+from django.http import JsonResponse
 
 
 def auto_grade_page(request, course, announce):         #hemant
@@ -51,3 +53,37 @@ def add_auto_file(request, course, announce):   #hemant
         auto_file.write(command_to)
         auto_file.close()
     return redirect('/courses/' + course + '/' + announce + '/auto_grade')
+
+
+def rerun_auto_grade(request, course, announce):    #jishu
+    thread = threading.Thread(target=reauto_start, args=[course, announce])
+    thread.start()
+    return redirect('/courses/'+course+'/'+announce+'/auto_grade')
+
+
+def run_auto_grade(request, course, announce):      #jishnu
+    thread = threading.Thread(target=auto_start, args=[course, announce])
+    thread.start()
+    return redirect('/courses/'+course+'/'+announce+'/auto_grade')
+
+
+def get_auto_count(request, course, announce):      #jishnu
+    return JsonResponse({'count': get_auto_len(course, announce)})
+
+
+def get_auto_csv(request, course, announce):        #jishnu
+    base = 'media/'+course+'/'+announce
+    data = request.POST
+    fil = open(base+'/__grades/auto_grades.csv', 'w+')
+    fil.close()
+    choices = data.getlist('choose[]')
+    bname = 0
+    btname = 0
+    if 'name' in choices:
+        bname = 1
+        choices.remove('name')
+    if 'team_name' in choices:
+        btname = 1
+        choices.remove('team_name')
+    gen_csv(base+'/__grades/auto_grades', choices, bname, btname, base+'/__grades/auto_grades.csv')
+    return redirect('/media/' + course + '/' + announce + '/__grades/auto_grades.csv')

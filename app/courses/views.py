@@ -1,6 +1,11 @@
-from django.shortcuts import render, redirect
-from ..models import *
 import csv
+import os
+from datetime import datetime
+from django.core.files.storage import FileSystemStorage
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from ..models import *
+
 
 def index(request):                 #fix by vinayaka
     if request.user.is_authenticated:
@@ -66,34 +71,30 @@ def course_add_user(request, course):
     else:
         return render(request, 'course/error.html')
 
+
 def course_add_user_file(request, course):
-    print('DONE')
     user = get_username(request)
     if user == 'admin' or len(Course.objects.filter(title=course)[0].teachers.filter(name=user)) > 0:
         if request.method == 'GET':
-            return render(request, 'course/course_add_user_file.html', {'course': course})
+            return render(request, 'course/course_add_user.html', {'course': course})
         elif request.method == 'POST':
-            print('KVR')
             upload_file = request.FILES['document'].read()
-            print(upload_file)
             upload_file = upload_file.decode("utf-8")
             reader = csv.reader(upload_file.split('\n'), delimiter=',')
             acourse = Course.objects.all().filter(title=course)[0]
             reader = reader[1:]
             for row in reader:
-                print(row)
-                if(row[0]=='Instructor'):
+                if (row[0] == 'Instructor'):
                     teach = User.objects.all().filter(name=row[1])
                     if len(teach) > 0:
                         teach = teach[0]
                         acourse.teachers.add(teach)
-                if(row[0]=='Student'):
+                if (row[0] == 'Student'):
                     stud = User.objects.all().filter(name=row[1])
                     if len(stud) > 0:
                         stud = stud[0]
                         acourse.students.add(stud)
                 acourse.save()
-                print('done')
             return redirect('/')
         else:
             return redirect('/')
@@ -139,6 +140,45 @@ def course_add_announce(request, course):           #mod by vinayaka
     else:
         return render(request, 'course/error.html')
 
+
+def course_modify_announce(request, course, announce):              #mod by jishnu
+    announce = Announcements.objects.all().filter(title=announce)[0]
+    if request.method == 'POST':
+        data = request.POST
+        title = data['title']
+        desc = data['desc']
+        deadline = data['deadline']
+        annobj = announce
+        annobj.title = title
+        annobj.desc = desc
+        if len(deadline) > 0:
+            print(deadline)
+            deadline = deadline.split('T')
+            dmy = deadline[0]
+            time = deadline[1]
+            dmy = dmy.split('-')
+            time = time.split(':')
+            dmy = [int(x) for x in dmy]
+            time = [int(x) for x in time]
+            [year, month, date] = dmy
+            [hour, min] = time
+            dobj = datetime(year, month, date, hour, min)
+            annobj.end = dobj
+        annobj.save()
+        return redirect('/courses/' + course + '/' + announce.title)
+    elif request.method == 'GET':
+        dobj = announce.end
+        date = [dobj.year, dobj.month, dobj.day, dobj.hour, dobj.minute]
+        date = [str(x) for x in date]
+        for i in range(len(date)):
+            if i > 0:
+                if len(date[i]) < 2:
+                    date[i] = '0'+date[i]
+        end_date = date[0]+'-'+date[1]+'-'+date[2]+'T'+date[3]+':'+date[4]
+        return render(request, 'course/course_modify_announce.html', {'course': course, 'announce': announce,
+                                                                      'end_date': end_date})
+    else:
+        return render(request, 'course/error.html')
 
 
 def announce_page(request, course, announce):               #mod by vinayaka

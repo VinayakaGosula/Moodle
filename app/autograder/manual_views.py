@@ -1,4 +1,4 @@
-from django.shortcuts import redirect,render
+from django.shortcuts import redirect
 from .misc import *
 import pickle
 
@@ -55,6 +55,7 @@ def get_user_sub_file_all(request, course, announce, file):     #vinayaka
                                                                 'graded': graded, 'course': course,
                                                                 'announce': announce, 'file': file})
 
+
 def man_grade_page(request, course, announce):      #hemant
     exists = 0
     fs = FileSystemStorage()
@@ -96,6 +97,7 @@ def add_man_file(request, course, announce):        #hemant
         extract_sub(course, announce, '__grades/man_test')
     return redirect('/courses/' + course + '/' + announce + '/man_grade')
 
+
 def get_man_csv(request, course, announce):     #vinayaka
     data = request.POST
     base = 'media/'+course+'/'+announce
@@ -112,4 +114,3 @@ def get_man_csv(request, course, announce):     #vinayaka
         choices.remove('team_name')
     gen_csv(base+'/__grades/man_grades', choices, bname, btname, base+'/__grades/man_grades.csv')
     return redirect('/media/'+course+'/'+announce+'/__grades/man_grades.csv')
-

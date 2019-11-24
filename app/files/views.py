@@ -4,7 +4,6 @@ from django.http import HttpResponse
 from django.core.files.storage import FileSystemStorage
 import zipfile
 import io
-import os
 
 
 def submit_assign(request, course, announce):               #mod by hemant
@@ -21,7 +20,6 @@ def submit_assign(request, course, announce):               #mod by hemant
         return render(request, 'files/upload.html', {'course': course, 'announce': announce})
     else:
         return redirect('account/login')
-
 
 
 def submit_assign_mass(request, course, announce):          #mod by hemant
@@ -72,13 +70,12 @@ def get_assign(request, course, announce):                  #mod by hemant
 
 def getzip(course, assign):
     fs = FileSystemStorage()
-    dir_fil=course+'/'+assign+'/'
+    dir_fil = course + '/' + assign + '/'
     subdirs, files = fs.listdir(dir_fil)
     print(files)
     s = io.BytesIO()
     zipf = zipfile.ZipFile(s, "w")
     for file in files:
-        zipf.write(settings.MEDIA_ROOT+'/'+dir_fil+file, file)
+        zipf.write(settings.MEDIA_ROOT + '/' + dir_fil + file, file)
     zipf.close()
     return s
-

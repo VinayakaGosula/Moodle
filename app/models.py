@@ -13,7 +13,7 @@ class Course(models.Model):
     students = models.ManyToManyField(User, related_name="course_student")
 
 
-class Announcements(models.Model):
+class Announcements(models.Model):      #mod by vinayaka
     title = models.CharField(null=True, max_length=50)
     desc = models.TextField()
     start = models.DateTimeField(null=True)

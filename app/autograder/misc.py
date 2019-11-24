@@ -1,8 +1,12 @@
+from functools import partial
 from django.core.files.storage import FileSystemStorage
 import zipfile
+import subprocess
+import shutil
+from django.shortcuts import render
 from django.conf import settings
-import pickle
-import os
+from multiprocessing.pool import ThreadPool
+from .csvgen import *
 
 
 def extract_sub(course, assign, user):      #hemant
@@ -122,3 +126,86 @@ def rem_students(course, announce, file):       #vinayaka
                 to_be_graded.append(x)
     graded = [x for x in student_list if x not in to_be_graded]
     return to_be_graded, graded
+
+
+def update_paths_auto_grade(course, announce):      #jishnu
+    test_path = '../../__grades/auto_test/' + get_user_sub_name(course, announce, '__grades/auto_test')
+    script_path = 'media/' + course + '/' + announce + '/__grades/auto_script/' + get_user_sub_name(course, announce, '__grades/auto_script')
+    return os.path.abspath(test_path), '../../..', script_path
+
+
+def gen_auto_out(user, sub_name, data, course, assign):     #jishnu
+    data = data.split('\n\n')
+    data = [x for x in data if x != '']
+    data = [x.split('\n') for x in data]
+    for i in range(len(data)):
+        data[i] = [x for x in data[i] if x != '']
+        comm = ''
+
+        for k in range(len(data[i])):
+            if k > 2:
+                comm += data[i][k]
+        data[i] = [sub_name, data[i][0], int(data[i][1]), int(data[i][2]), comm]
+    pfile = open('media/'+course+'/'+assign+'/__grades/auto_grades/'+user+'.pickle', 'wb+')
+    pickle.dump(data, pfile)
+    pfile.close()
+    return data
+
+
+def eval_one(submission, script, command, testcases, course, assign):       #jishnu
+    command = command.replace("{submission}", submission)
+    command = command.replace("{testcases}", testcases)
+    data = subprocess.check_output(command, cwd=script, shell=True)
+    data = data.decode('utf-8')
+    user = submission.split('/')[-2]
+    file_name = submission.split('/')[-1]
+    gen_auto_out(user, file_name, data, course, assign)
+    return [submission.split('/')[-2], data]
+
+
+def eval_all(script, submissions, command, testcases, course, assign, skips): #jishnu
+    files = os.listdir('media/'+course+'/'+assign)
+    files = [x for x in files if os.path.isdir('media/'+course+'/'+assign+'/' + x)]
+    filelist=[]
+    for i in range(len(files)):
+        if files[i] != '__grades' and files[i] not in skips:
+            filelist.append(submissions + '/' + files[i] + '/' + get_user_sub_name(course, assign, files[i]))
+    p = ThreadPool(processes=len(filelist))
+    data = p.map(partial(eval_one, script=script, command=command, testcases=testcases,
+                         course=course, assign=assign), filelist)
+    p.close()
+    return data
+
+
+def reauto_start(course, assign):       #jishnu
+    test, sub, script = update_paths_auto_grade(course, assign)
+    if os.path.exists('media/'+course+'/'+assign+'/__grades/auto_grades'):
+        shutil.rmtree('media/'+course+'/'+assign+'/__grades/auto_grades')
+    os.mkdir('media/'+course+'/'+assign+'/__grades/auto_grades')
+    if os.path.exists('media/'+course+'/'+assign+'/auto_grade.txt'):
+        f = open('media/'+course+'/'+assign+'/auto_grade.txt')
+        command = f.read()
+        f.close()
+        if len(command) > 0:
+            return eval_all(script, sub, command, test, course, assign, [])
+    return 0
+
+
+def auto_start(course, assign):     #jishnu
+    test, sub, script = update_paths_auto_grade(course, assign)
+    if not os.path.exists('media/'+course+'/'+assign+'/__grades/auto_grades'):
+        os.mkdir('media/'+course+'/'+assign+'/__grades/auto_grades')
+    if os.path.exists('media/'+course+'/'+assign+'/auto_grade.txt'):
+        f = open('media/'+course+'/'+assign+'/auto_grade.txt')
+        command = f.read()
+        f.close()
+        if len(command) > 0:
+            skip = os.listdir('media/'+course + '/' + assign + '/__grades/auto_grades')
+            skip = [x.rstrip('.pickle') for x in skip]
+            return eval_all(script, sub, command, test, course, assign, skip)
+    return 0
+
+
+def get_auto_len(course, assign):       #jishnu
+    fs = FileSystemStorage()
+    return [len(os.listdir('media/'+course+'/'+assign+'/__grades/auto_grades')), len(fs.listdir(course+'/'+assign)[0])-1]
