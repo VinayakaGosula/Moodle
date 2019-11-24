@@ -28,5 +28,8 @@
         {% csrf_token %}
         <button type="submit">Download</button>
     </form>
+    {% for x in sublist %}
+        <a href="{{ x.1 }}">{{ x.0 }}</a>
+    {% endfor %}
 </body>
 </html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Auto grade</title>
+</head>
+<body>
+    <form method="post" action="{% url 'add_auto_grade' course=course announce=announce%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Auto file : <input type="file" name="auto_file"></p>
+        <p>Test cases : <input type="file" name="test_file"></p>
+        <p>Command: <input type="text" name="command"></p>
+        <input type="submit" value="Add">
+    </form>
+    <a href="{% url 'run_auto_grade' course=course announce=announce%} ">Start autograde</a>
+    <a href="{% url 'rerun_auto_grade' course=course announce=announce%} ">Restart autograde</a>
+    <p>The graded count is : <div id="counter"></div></p>
+    <h4>Download csv</h4>
+    <form method="post" action="{% url 'auto_get_csv' course=course announce=announce%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for x in csv_cols %}
+            <p><input type="checkbox" name="choose[]" value="{{ x }}">{{ x }}</p>
+        {% endfor %}
+        <input type="submit" value="Download csv">
+    </form>
+</body>
+<script>
+    function get_counter(){
+        let request = new XMLHttpRequest();
+        request.open('GET', '/courses/{{ course }}/{{ announce }}/auto_grade/get_count');
+        request.responseType = 'json';
+        request.onload = function() {
+            document.getElementById('counter').innerHTML = request.response['count'][0]+'/'+request.response['count'][1]
+        };
+        request.send();
+    }
+    get_counter()
+    setInterval(function(){get_counter()} , 4000);
+</script>
+</html>

@@ -22,5 +22,12 @@ urlpatterns = [
     #files
     path('courses/<str:course>/<str:announce>/submit', views.submit_assign, name='submit_page'),
     path('courses/<str:course>/<str:announce>/get', views.get_assign, name='get_page'),
-    path('courses/<str:course>/<str:announce>/submit_mass', views.submit_assign_mass, name='submit_mass_page')
+    path('courses/<str:course>/<str:announce>/submit_mass', views.submit_assign_mass, name='submit_mass_page'),
+
+    # autograding
+    path('courses/<str:course>/<str:announce>/man_grade', views.man_grade_page, name='man_grade_page'),                         #hemant
+    path('courses/<str:course>/<str:announce>/man_grade/add_man_grade_file', views.add_man_file, name='add_man_grade'),         #hemant
+
+    path('courses/<str:course>/<str:announce>/auto_grade', views.auto_grade_page, name='auto_grade_page'),                      #hemant
+    path('courses/<str:course>/<str:announce>/auto_grade/add_auto_grade_file',views.add_auto_file, name='add_auto_grade'),      #hemant
 ]

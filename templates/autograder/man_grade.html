@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual page</title>
+</head>
+<body>
+    <form method="post" action="{% url 'add_man_grade' course=course announce=announce%}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>Manual file : <input type="file" name="man_file"></p>
+        <p>Test cases : <input type="file" name="test_file"></p>
+        <input type="submit" value="Add">
+    </form>
+    {% if exists %}
+        <h4>Questions:</h4>
+        {% for x in paths %}
+            <a href="{% url 'man_sub_list' course=course announce=announce file=x %}">{{ x }}</a>
+        {% endfor %}
+        <h4>Download csv</h4>
+        <form method="post" action="{% url 'man_get_csv' course=course announce=announce%}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for x in csv_cols %}
+                <p><input type="checkbox" name="choose[]" value="{{ x }}">{{ x }}</p>
+            {% endfor %}
+            <input type="submit" value="Download csv">
+        </form>
+    {% else %}
+        Please upload the file for manual grading.
+    {% endif %}
+</body>
+</html>
