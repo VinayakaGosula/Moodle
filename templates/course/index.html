@@ -37,6 +37,9 @@ button {
 </style>
 <body>
     <h1 style="text-align: center; font-size:60px; padding: 60px;">Welcome, {{ user.username }}</h1>
+    {% if is_admin %}
+        <a href="/admin/add_course">Create new course</a>
+    {% endif %}
     <div class="row">
         <div class="column">
             <h2 style="text-align: center; font-size:40px; padding:0cm"> Teaching Courses </h2>

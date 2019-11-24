@@ -27,6 +27,11 @@ urlpatterns = [
     # autograding
     path('courses/<str:course>/<str:announce>/man_grade', views.man_grade_page, name='man_grade_page'),                         #hemant
     path('courses/<str:course>/<str:announce>/man_grade/add_man_grade_file', views.add_man_file, name='add_man_grade'),         #hemant
+    path('courses/<str:course>/<str:announce>/man_grade/get_csv', views.get_man_csv, name='man_get_csv'),  # vinayaka
+    path('courses/<str:course>/<str:announce>/man_grade/<str:file>', views.get_all_sub_view, name='manual_viewer'),
+    path('courses/<str:course>/<str:announce>/man_grade/<str:file>/list', views.get_user_sub_file_all,name='man_sub_list'),  # vinayaka
+    path('courses/<str:course>/<str:announce>/man_grade/<str:file>/user/<str:name>', views.get_user_sub_file,name='user_sub_view'),#vinayaka
+
 
     path('courses/<str:course>/<str:announce>/auto_grade', views.auto_grade_page, name='auto_grade_page'),                      #hemant
     path('courses/<str:course>/<str:announce>/auto_grade/add_auto_grade_file',views.add_auto_file, name='add_auto_grade'),      #hemant

@@ -51,3 +51,74 @@ def convert_file(inp):      #hemant
                 out.append([file_name, cur_path.lstrip('/   ')])
         cnt -= 1
     return out
+
+
+def run_file(course, announce, file_path, user):        #vinayaka
+    fs = FileSystemStorage()
+    file = fs.open(course + '/' + announce + '/man_grade.txt')
+    inp = file.read()
+    file.close()
+    out = convert_file(inp.decode('utf-8'))
+    lis = [x for x in out if x[1] == file_path]
+    if len(lis) > 0:
+        lis = lis[0]
+        if len(lis) == 3:
+            command, path = update_paths_man_grade(lis[2], course, announce, user)
+            path = path + '/' + file_path
+            if path.rfind('/') == -1:
+                path = ''
+            else:
+                path = path[:path.rfind('/')]
+            run_command(command, path)
+
+
+def update_paths_man_grade(inp, course, announce, student):     #vinayaka
+    test_path = os.path.abspath('media/' + course + '/' + announce + '/__grades/man_test/' +
+                                get_user_sub_name(course, announce, '__grades/man_test'))
+    sub_path = 'media/' + course + '/' + announce + '/' + student + '/' + get_user_sub_name(course, announce, student)
+    return inp.replace('{{test_root}}', test_path), sub_path
+
+
+def run_command(command, dir):      #vinayaka
+    if os.path.exists(dir):
+        subprocess.call(command, cwd=dir, shell=True)
+
+
+def render_view_page(request, course, announce, user, file_list, done, tot_marks):      #vinayaka
+    loc = []
+    if not done:
+        for file_name in file_list:
+            loc.append(
+                '/media' + '/' + course + '/' + announce + '/' + user + '/' + get_user_sub_name(course, announce, user) \
+                + '/' + file_name)
+        extract_sub(course, announce, user)
+        run_file(course, announce, file_list[0], user)
+    exists = [x for x in loc if FileSystemStorage().exists(x.lstrip('/media/'))]
+    return render(request, 'autograder/manual_viewer.html', {'loc': loc,
+                                                             'done': done, 'course': course, 'announce': announce,
+                                                             'file': ('|'.join(file_list)).replace('/', '-'),
+                                                             'user': user,
+                                                             'tot_marks': tot_marks,
+                                                             'exists': exists})
+
+
+def rem_students(course, announce, file):       #vinayaka
+    fs = FileSystemStorage()
+    file = file.replace('-', '/')
+    student_list = fs.listdir(course + '/' + announce)[0]
+    student_list.remove('__grades')
+    to_be_graded = []
+    for x in student_list:
+        fil_path = 'media/' + course + '/' + announce + '/__grades/man_grades/' + x + '.pickle'
+        if os.path.exists(fil_path):
+            f = open(fil_path, 'rb')
+            data = pickle.load(f)
+            f.close()
+            is_present = 0
+            for y in data:
+                if y[1] == file:
+                    is_present = 1
+            if not is_present:
+                to_be_graded.append(x)
+    graded = [x for x in student_list if x not in to_be_graded]
+    return to_be_graded, graded

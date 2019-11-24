@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+</head>
+<body>
+    <p>Ungraded</p>
+    {% for x in not_graded %}
+        <a href="/courses/{{ course }}/{{ announce }}/man_grade/{{ bef_file }}/user/{{ x }}">{{ x }}</a>
+    {% endfor %}
+    <p>Graded</p>
+    {% for x in graded %}
+        <a href="/courses/{{ course }}/{{ announce }}/man_grade/{{ bef_file }}/user/{{ x }}">{{ x }}</a>
+    {% endfor %}
+</body>
+</html>

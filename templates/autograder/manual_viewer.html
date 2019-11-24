@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manual Grade</title>
+</head>
+<body>
+    {% if done %}
+        No more submissions
+    {% else %}
+        <h2>This is {{ user }}</h2>
+        {% for fileloc in loc %}
+            {{ file }}
+            {% if fileloc in exists %}
+                <embed src="{{ fileloc }}" width="100%" height="500">
+            {% else %}
+                <p>The file doesn't exist or some error occured</p>
+            {% endif %}
+        {% endfor %}
+        <form method="post" action="{% url 'user_sub_view' course=course announce=announce file=file name=user%}">
+            {% csrf_token %}
+            <p>Marks: <input type="text" name="marks" value="0"></p>
+            <p>Total marks: <input type="text" name="tot_marks" value="{{ tot_marks }}"></p>
+            <p>Comments: <input type="text" name="comment"></p>
+            <p hidden>Counter(for debugging): <input type="text" name="username" value="{{ user }}"></p>
+            <p><input type="submit" value="next ungraded"></p>
+        </form>
+    {% endif %}
+</body>
+</html>

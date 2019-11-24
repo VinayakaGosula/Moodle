@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 from ..models import *
 import csv
 
-def index(request):
+def index(request):                 #fix by vinayaka
     if request.user.is_authenticated:
         user = get_username(request)
         if user == 'admin':
             tcourses = Course.objects.all()
             scourses = []
-            return render(request, 'course/index.html', {'tcourses': tcourses, 'scourses': scourses})
+            is_admin = 1
+            return render(request, 'course/index.html', {'tcourses': tcourses, 'scourses': scourses, 'is_admin': is_admin})
 
         uobject = User.objects.all().filter(name=user)
         tcourses = []
@@ -16,22 +17,26 @@ def index(request):
         if len(uobject) > 0:
             tcourses = uobject[0].course_teacher.all()
             scourses = uobject[0].course_student.all()
-        return render(request, 'course/index.html', {'tcourses': tcourses, 'scourses': scourses})
+        is_admin = 0
+        return render(request, 'course/index.html', {'tcourses': tcourses, 'scourses': scourses, 'is_admin': is_admin})
     else:
         return redirect('account/login')
 
 
-def course_page(request, course):
+def course_page(request, course):       #fix by vinayaka
     user = get_username(request)
     if not course_verify(course, user):
         return render(request, 'course/error.html')
     courseo = Course.objects.all().filter(title=course)[0]
-    uobj = User.objects.all().filter(name=user)[0]
     is_teacher = 0
-    if uobj in courseo.teachers.all():
+    if user == 'admin':
         is_teacher = 1
+    else:
+        uobj = User.objects.all().filter(name=user)[0]
+        if uobj in courseo.teachers.all():
+            is_teacher = 1
     announce = courseo.announcements_set.all()
-    return render(request, 'course/course.html', {'course': course, 'announcel': announce, 'is_teacher' : is_teacher})
+    return render(request, 'course/course.html', {'course': course, 'announcel': announce, 'is_teacher': is_teacher})
 
 
 def course_add_user(request, course):
@@ -96,7 +101,7 @@ def course_add_user_file(request, course):
         return render(request, 'course/error.html')
 
 
-def course_add_announce(request, course):
+def course_add_announce(request, course):           #mod by vinayaka
     user = get_username(request)
     if course_verify(course, user):
         if request.method == 'GET':
@@ -105,18 +110,38 @@ def course_add_announce(request, course):
             data = request.POST
             title = data['title']
             desc = data['desc']
+            deadline = data['deadline']
+            os.makedirs('media/' + course + '/' + title, exist_ok=True)
+            os.makedirs('media/' + course + '/' + title + '/__grades', exist_ok=True)
+            os.makedirs('media/' + course + '/' + title + '/__grades/man_grades', exist_ok=True)
+            os.makedirs('media/' + course + '/' + title + '/__grades/auto_grades', exist_ok=True)
+            os.makedirs('media/' + course + '/' + title + '/__grades/man_test', exist_ok=True)
+            os.makedirs('media/' + course + '/' + title + '/__grades/auto_test', exist_ok=True)
             acourse = Course.objects.all().filter(title=course)[0]
             annobj = Announcements(title=title, desc=desc)
             annobj.course = acourse
+            if len(deadline) > 0:
+                deadline = deadline.split('T')
+                dmy = deadline[0]
+                time = deadline[1]
+                dmy = dmy.split('-')
+                time = time.split(':')
+                dmy = [int(x) for x in dmy]
+                time = [int(x) for x in time]
+                [year, month, date] = dmy
+                [hour, min] = time
+                dobj = datetime(year, month, date, hour, min)
+                annobj.end = dobj
             annobj.save()
-            return redirect('/courses/'+course)
+            return redirect('/courses/' + course)
         else:
-            return redirect('/courses/'+course)
+            return redirect('/courses/' + course)
     else:
         return render(request, 'course/error.html')
 
 
-def announce_page(request, course, announce):
+
+def announce_page(request, course, announce):               #mod by vinayaka
     user = get_username(request)
     if not course_verify(course, user):
         return render(request, 'course/error.html')
@@ -124,11 +149,30 @@ def announce_page(request, course, announce):
     if len(announce) > 0:
         announce = announce[0]
         cobj = announce.course
-        uobj = User.objects.all().filter(name=user)[0]
         is_teacher = 0
-        if uobj in cobj.teachers.all():
-            is_teacher = 1
-        return render(request, 'course/announce.html', {'is_teacher': is_teacher, 'course': course, 'announce': announce})
+        if user == 'admin':
+            is_teacher=1
+        else:
+            uobj = User.objects.all().filter(name=user)[0]
+            if uobj in cobj.teachers.all():
+                is_teacher = 1
+        deadline = announce.end
+        is_done = 0
+        sub_exists=0
+        dead_date = 'No deadline'
+        if deadline is not None:
+            dead_date = deadline.__str__()
+            if deadline < timezone.now():
+                is_done = 1
+        fs = FileSystemStorage()
+        sub_name = ''
+        if fs.exists(course+'/'+announce.title+'/'+user):
+            sub_exists = 1
+            sub_name = fs.listdir(course+'/'+announce.title+'/'+user)[1][0]
+        return render(request, 'course/announce.html', {'is_teacher': is_teacher, 'course': course,
+                                                        'announce': announce, 'is_done': is_done,
+                                                        'dead_date': dead_date, 'sub_exists': sub_exists,
+                                                        'sub_name': sub_name, 'user': user})
     else:
         return render(request, 'course/error.html')
 

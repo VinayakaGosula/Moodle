@@ -16,4 +16,6 @@ class Course(models.Model):
 class Announcements(models.Model):
     title = models.CharField(null=True, max_length=50)
     desc = models.TextField()
+    start = models.DateTimeField(null=True)
+    end = models.DateTimeField(null=True)
     course = models.ForeignKey(Course, to_field='title', on_delete=models.CASCADE)
