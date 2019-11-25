@@ -29,6 +29,7 @@ def get_user_sub_name(course, assign, user):    #hemant
     return ''
 
 
+
 def convert_file(inp):      #hemant
     out = []
     cur_dep = -1
@@ -52,7 +53,31 @@ def convert_file(inp):      #hemant
             if args[1] == '1':
                 out.append([file_name, cur_path.lstrip('/'), args[2]])
             else:
-                out.append([file_name, cur_path.lstrip('/   ')])
+                out.append([file_name, cur_path.lstrip('/')])
+        cnt -= 1
+    return out
+
+
+def convert_file_with_dir(inp):      #hemant
+    out = []
+    cur_dep = -1
+    cur_path = ''
+    cur_inp = inp
+    cnt = 1
+    while len(cur_inp) > 0:
+        cur_line = cur_inp[:cur_inp.find('\n')]
+        cur_inp = cur_inp[cur_inp.find('\n') + 1:]
+        strip_line = cur_line.lstrip('\t')
+        depth = len(cur_line) - len(strip_line)
+        while cur_dep >= depth:
+            cur_path = cur_path[:cur_path.rfind('/')]
+            cur_dep -= 1
+        file_name = cur_line[:cur_line.find('|')].lstrip('\t')
+        cur_line = cur_line[cur_line.find('|') + 1:]
+        cur_path = cur_path + '/' + file_name
+        cur_dep += 1
+        if file_name != '':
+            out.append([file_name, cur_path.lstrip('/')])
         cnt -= 1
     return out
 

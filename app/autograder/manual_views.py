@@ -8,7 +8,7 @@ def get_all_sub_view(request, course, announce, file):      #vinayaka
     if len(not_graded) > 0:
         return redirect('/courses/'+course+'/'+announce+'/man_grade/'+file+'/user/'+not_graded[0])
     else:
-        return render_view_page(request, course, announce, [file], '', 1, 100)
+        return render_view_page(request, course, announce, '', [file], 1, 100)
 
 
 def get_user_sub_file(request, course, announce, file, name):       #vinayaka
@@ -68,10 +68,11 @@ def man_grade_page(request, course, announce):      #hemant
         file = fs.open(course+'/'+announce+'/man_grade.txt')
         inp = file.read()
         file.close()
-        out = convert_file(inp.decode('utf-8'))
+        out = convert_file_with_dir(inp.decode('utf-8'))
         names = [x[0] for x in out]
         paths = [x[1].replace('/', '-') for x in out]
         csv_cols = [x[1] for x in out]
+        csv_cols.append('Total')
         csv_cols.append('name')
         csv_cols.append('team_name')
     return render(request, 'autograder/man_grade.html', {'exists': exists, 'names': names, 'paths': paths,
@@ -112,5 +113,8 @@ def get_man_csv(request, course, announce):     #vinayaka
     if 'team_name' in choices:
         btname = 1
         choices.remove('team_name')
+    if 'total' in choices:
+        choices.remove('total')
+        choices.append('')
     gen_csv(base+'/__grades/man_grades', choices, bname, btname, base+'/__grades/man_grades.csv')
     return redirect('/media/'+course+'/'+announce+'/__grades/man_grades.csv')
