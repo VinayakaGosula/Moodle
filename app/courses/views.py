@@ -231,6 +231,7 @@ def add_course(request):
             title = data['title']
             teachers = data.getlist('teacher')
             acourse = Course.objects.all().filter(title=title)
+            os.mkdir('media/' + title)
             if len(acourse) > 0:
                 acourse = acourse[0]
             else:
