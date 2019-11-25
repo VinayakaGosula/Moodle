@@ -195,6 +195,8 @@ def eval_all(script, submissions, command, testcases, course, assign, skips): #j
     for i in range(len(files)):
         if files[i] != '__grades' and files[i] not in skips:
             filelist.append(submissions + '/' + files[i] + '/' + get_user_sub_name(course, assign, files[i]))
+            if not FileSystemStorage().exists(course+'/'+assign+'/'+files[i]+'/'+get_user_sub_name(course, assign, files[i])):
+                extract_sub(course, assign, files[i])
     p = ThreadPool(processes=len(filelist))
     data = p.map(partial(eval_one, script=script, command=command, testcases=testcases,
                          course=course, assign=assign), filelist)
