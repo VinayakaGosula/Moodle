@@ -1,6 +1,0 @@
-|0
-	first.txt|1,0
-	second.txt|1,0
-	tem|0
-		third.txt|1,1,bash a.sh
-		fourth.txt|1,1,python x.py

@@ -82,19 +82,20 @@ def course_add_user_file(request, course):
             upload_file = upload_file.decode("utf-8")
             reader = csv.reader(upload_file.split('\n'), delimiter=',')
             acourse = Course.objects.all().filter(title=course)[0]
-            reader = reader[1:]
+            print(reader)
             for row in reader:
-                if (row[0] == 'Instructor'):
-                    teach = User.objects.all().filter(name=row[1])
-                    if len(teach) > 0:
-                        teach = teach[0]
-                        acourse.teachers.add(teach)
-                if (row[0] == 'Student'):
-                    stud = User.objects.all().filter(name=row[1])
-                    if len(stud) > 0:
-                        stud = stud[0]
-                        acourse.students.add(stud)
-                acourse.save()
+                if len(row) == 2:
+                    if row[0] == 'Instructor':
+                        teach = User.objects.all().filter(name=row[1])
+                        if len(teach) > 0:
+                            teach = teach[0]
+                            acourse.teachers.add(teach)
+                    if row[0] == 'Student':
+                        stud = User.objects.all().filter(name=row[1])
+                        if len(stud) > 0:
+                            stud = stud[0]
+                            acourse.students.add(stud)
+                    acourse.save()
             return redirect('/')
         else:
             return redirect('/')
