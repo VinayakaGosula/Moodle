@@ -34,12 +34,16 @@
             Test cases : <input type="file" name="test_file">
             Command: <input type="text" name="command"></h2>
             <button type="submit" value="Add">Submit</button>
-        </form>
+        </center>
+    </form>
+    <center>
         <br>
         <button onclick='location.href="{% url 'run_auto_grade' course=course announce=announce%} "'>Start Autograder</button>
         <button onclick='location.href="{% url 'rerun_auto_grade' course=course announce=announce%}"'>Restart Autograder</button>
         <h2 style="font-size: 25px; margin-left: -200px;">Grading Progess : <div id="counter"></div></h2>
-        <h2 style="font-size: 30px;">Download Marklist</h4>
+        <h2 style="font-size: 30px;">Download Marklist</h2>
+    </center>
+    <center>
         <form method="post" action="{% url 'auto_get_csv' course=course announce=announce%}" enctype="multipart/form-data">
             {% csrf_token %}
             {% for x in csv_cols %}

@@ -71,11 +71,12 @@ def get_assign(request, course, announce):                  #mod by hemant
 def getzip(course, assign):
     fs = FileSystemStorage()
     dir_fil = course + '/' + assign + '/'
-    subdirs, files = fs.listdir(dir_fil)
-    print(files)
+    files, subdir = fs.listdir(dir_fil)
     s = io.BytesIO()
     zipf = zipfile.ZipFile(s, "w")
     for file in files:
-        zipf.write(settings.MEDIA_ROOT + '/' + dir_fil + file, file)
+        if file != '__grades':
+            file_name = fs.listdir(dir_fil+file)[1][0]
+            zipf.write(settings.MEDIA_ROOT + '/' + dir_fil + file+'/'+file_name, file+'/'+file_name)
     zipf.close()
     return s

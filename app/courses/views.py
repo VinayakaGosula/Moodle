@@ -65,9 +65,9 @@ def course_add_user(request, course):
                     stud = stud[0]
                     acourse.students.add(stud)
             acourse.save()
-            return redirect('/')
+            return redirect('/courses/'+course+'/add_user')
         else:
-            return redirect('/')
+            return redirect('')
     else:
         return render(request, 'course/error.html')
 
@@ -112,12 +112,13 @@ def course_add_announce(request, course):           #mod by vinayaka
             title = data['title']
             desc = data['desc']
             deadline = data['deadline']
-            os.makedirs('media/' + course + '/' + title, exist_ok=True)
-            os.makedirs('media/' + course + '/' + title + '/__grades', exist_ok=True)
-            os.makedirs('media/' + course + '/' + title + '/__grades/man_grades', exist_ok=True)
-            os.makedirs('media/' + course + '/' + title + '/__grades/auto_grades', exist_ok=True)
-            os.makedirs('media/' + course + '/' + title + '/__grades/man_test', exist_ok=True)
-            os.makedirs('media/' + course + '/' + title + '/__grades/auto_test', exist_ok=True)
+            os.mkdir('media/' + course + '/' + title)
+            os.mkdir('media/' + course + '/' + title + '/__grades')
+            os.mkdir('media/' + course + '/' + title + '/__grades/man_grades')
+            os.mkdir('media/' + course + '/' + title + '/__grades/auto_grades')
+            os.mkdir('media/' + course + '/' + title + '/__grades/man_test')
+            os.mkdir('media/' + course + '/' + title + '/__grades/auto_test')
+            os.mkdir('media/' + course + '/' + title + '/__grades/auto_script')
             acourse = Course.objects.all().filter(title=course)[0]
             annobj = Announcements(title=title, desc=desc)
             annobj.course = acourse
@@ -168,13 +169,15 @@ def course_modify_announce(request, course, announce):              #mod by jish
         return redirect('/courses/' + course + '/' + announce.title)
     elif request.method == 'GET':
         dobj = announce.end
-        date = [dobj.year, dobj.month, dobj.day, dobj.hour, dobj.minute]
-        date = [str(x) for x in date]
-        for i in range(len(date)):
-            if i > 0:
-                if len(date[i]) < 2:
-                    date[i] = '0'+date[i]
-        end_date = date[0]+'-'+date[1]+'-'+date[2]+'T'+date[3]+':'+date[4]
+        end_date = ''
+        if dobj is not None:
+            date = [dobj.year, dobj.month, dobj.day, dobj.hour, dobj.minute]
+            date = [str(x) for x in date]
+            for i in range(len(date)):
+                if i > 0:
+                    if len(date[i]) < 2:
+                        date[i] = '0'+date[i]
+            end_date = date[0]+'-'+date[1]+'-'+date[2]+'T'+date[3]+':'+date[4]
         return render(request, 'course/course_modify_announce.html', {'course': course, 'announce': announce,
                                                                       'end_date': end_date})
     else:

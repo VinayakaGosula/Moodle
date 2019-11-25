@@ -5,6 +5,8 @@ import pickle
 
 def get_all_sub_view(request, course, announce, file):      #vinayaka
     not_graded, graded = rem_students(course, announce, file)
+    print(graded)
+    print(not_graded)
     if len(not_graded) > 0:
         return redirect('/courses/'+course+'/'+announce+'/man_grade/'+file+'/user/'+not_graded[0])
     else:

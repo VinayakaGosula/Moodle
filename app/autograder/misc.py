@@ -136,7 +136,7 @@ def rem_students(course, announce, file):       #vinayaka
     file = file.replace('-', '/')
     student_list = fs.listdir(course + '/' + announce)[0]
     student_list.remove('__grades')
-    to_be_graded = []
+    graded = []
     for x in student_list:
         fil_path = 'media/' + course + '/' + announce + '/__grades/man_grades/' + x + '.pickle'
         if os.path.exists(fil_path):
@@ -147,10 +147,10 @@ def rem_students(course, announce, file):       #vinayaka
             for y in data:
                 if y[1] == file:
                     is_present = 1
-            if not is_present:
-                to_be_graded.append(x)
-    graded = [x for x in student_list if x not in to_be_graded]
-    return to_be_graded, graded
+            if is_present:
+                graded.append(x)
+    not_graded = [x for x in student_list if x not in graded]
+    return not_graded, graded
 
 
 def update_paths_auto_grade(course, announce):      #jishnu

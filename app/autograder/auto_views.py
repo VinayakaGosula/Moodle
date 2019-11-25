@@ -56,6 +56,7 @@ def add_auto_file(request, course, announce):   #hemant
 
 
 def rerun_auto_grade(request, course, announce):    #jishu
+    print(2)
     thread = threading.Thread(target=reauto_start, args=[course, announce])
     thread.start()
     return redirect('/courses/'+course+'/'+announce+'/auto_grade')
